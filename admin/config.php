@@ -5,7 +5,7 @@ define('DB_HOST', getenv('MYSQLHOST')     ?: 'localhost');
 define('DB_PORT', getenv('MYSQLPORT')     ?: '3306');
 define('DB_USER', getenv('MYSQLUSER')     ?: 'root');
 define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
-define('DB_NAME', getenv('alabibas') ?: 'alabibas');   // <-- your existing database name in phpMyAdmin
+define('DB_NAME', getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: 'alabibas');   // <-- your existing database name in phpMyAdmin
 
 // Your existing products table. If yours differs, change these 3 lines.
 define('PRODUCTS_TABLE', 'products');
