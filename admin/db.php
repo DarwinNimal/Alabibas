@@ -4,9 +4,17 @@ if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax']);
     session_start();
 }
+$opts = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC];
+$dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';charset=utf8mb4';
 try {
-    $pdo = new PDO('mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+    try {
+        $pdo = new PDO($dsn . ';dbname=' . DB_NAME, DB_USER, DB_PASS, $opts);
+    } catch (PDOException $e) {
+        if ((int)($e->errorInfo[1] ?? 0) !== 1049) throw $e;   // 1049 = database doesn't exist yet: create it
+        $tmp = new PDO($dsn, DB_USER, DB_PASS, $opts);
+        $tmp->exec('CREATE DATABASE IF NOT EXISTS `' . str_replace('`', '', DB_NAME) . '` CHARACTER SET utf8mb4');
+        $pdo = new PDO($dsn . ';dbname=' . DB_NAME, DB_USER, DB_PASS, $opts);
+    }
 } catch (Throwable $e) {
     http_response_code(500);
     echo '<h3>Database connection failed</h3><p>' . htmlspecialchars($e->getMessage()) . '</p><p>Host: ' . htmlspecialchars(DB_HOST) . ' | Port: ' . htmlspecialchars(DB_PORT) . ' | DB: ' . htmlspecialchars(DB_NAME) . ' | User: ' . htmlspecialchars(DB_USER) . '</p>';
