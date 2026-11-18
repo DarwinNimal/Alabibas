@@ -1,8 +1,0 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin login | ALABIBAS</title>
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f4f4f2;font:15px system-ui}
-form{background:#fff;padding:28px;border:1px solid #ddd;width:300px;display:grid;gap:12px}h1{margin:0 0 4px;font-size:20px}
-input,button{padding:10px;font:inherit;border:1px solid #ccc}button{background:#111;color:#fff;border-color:#111;cursor:pointer}#e{color:#b00020;min-height:1em;margin:0}</style></head>
-<body><form id="f"><h1>ALABIBAS admin</h1><input name="user" placeholder="Username" required autofocus><input name="pass" type="password" placeholder="Password" required><p id="e"></p><button>Log in</button></form>
-<script>f.onsubmit=async e=>{e.preventDefault();const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:f.user.value,pass:f.pass.value})});
-r.ok?location.href='/admin/':e_.textContent=(await r.json()).error};const e_=document.getElementById('e')</script></body></html>
